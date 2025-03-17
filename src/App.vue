@@ -3,13 +3,13 @@ import { reactive } from 'vue';
 import { useFormValidation } from './composables/useFormValidation';
 import { useApi } from './composables/useApi';
 
-// Реактивные значения формы
+
 const formValues = reactive({
   email: '',
   password: '',
 });
 
-// Правила валидации
+
 const rules = {
   email: [
     (v: string) => (!!v ? null : 'Email is required'),
@@ -20,13 +20,12 @@ const rules = {
   ],
 };
 
-// Использование композабла для валидации
+
 const { errors, dirty, isValid, validateAll, touch } = useFormValidation(
     rules,
     formValues
 );
 
-// Использование композабла для API
 const api = useApi<{ id: number }>({
   url: 'https://jsonplaceholder.typicode.com/posts',
   method: 'POST',
@@ -35,17 +34,17 @@ const api = useApi<{ id: number }>({
   },
 });
 
-// Обработчик отправки формы
+
 async function handleSubmit() {
   if (!validateAll()) {
     alert('Form has errors. Please fix them.');
     return;
   }
 
-  // Отправка данных на сервер
+
   api.execute();
 
-  // Обработка результата
+
   if (api.isSuccess.value) {
     alert('Form submitted successfully!');
   } else if (api.isError.value) {
@@ -56,6 +55,7 @@ async function handleSubmit() {
 
 <template>
   <form @submit.prevent="handleSubmit">
+    <h1>Login Form</h1>
     <div>
       <label>Email:</label>
       <input
@@ -94,16 +94,57 @@ async function handleSubmit() {
   </form>
 </template>
 
-<style>
+<style scoped>
+form {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+}
+
+input {
+  width: 100%;
+  padding: 0.75rem;
+  margin: 0.5rem 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+button {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
 .error {
-  color: red;
-  font-size: 0.9em;
-  margin-top: 4px;
+  color: #dc3545;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
 }
 
 .success {
-  color: green;
-  font-size: 0.9em;
-  margin-top: 4px;
+  color: #28a745;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+h1 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  text-align: center;
 }
 </style>
